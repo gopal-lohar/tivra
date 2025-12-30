@@ -6,11 +6,11 @@ edition = "2024"
 [dependencies]
 tokio.workspace = true
 serde.workspace = true
+toml.workspace = true
 tracing.workspace = true
 tracing-subscriber = { version = "0.3.22", features = ["env-filter"] }
-tracing-appender = "0.2.4"
-directories = "6.0.0"
-toml = "0.9.8"
+tracing-appender = { version = "0.2.4" }
+directories = { version = "6.0.0" }
 
 [dev-dependencies]
-tempfile = "3.24.0"
+tempfile = {version = "3.24.0"}

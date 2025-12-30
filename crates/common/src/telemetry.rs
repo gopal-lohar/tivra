@@ -92,10 +92,7 @@ pub struct TelemetryHandle {
 /// # Returns
 /// A `TelemetryHandle` containing the worker guard and log filepath.
 pub fn init(config: TelemetryConfig) -> Result<TelemetryHandle, Box<dyn std::error::Error>> {
-    let mut handle = Ok(TelemetryHandle {
-        guard: None,
-        log_file: None,
-    });
+    let mut handle = Err("Logger is already initialized".into());
 
     INIT.call_once(|| {
         handle = init_internal(config);
