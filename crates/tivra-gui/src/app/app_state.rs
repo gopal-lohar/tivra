@@ -7,9 +7,10 @@ use iced::{Element, Subscription, Theme, task::Task, time::Instant, widget::cont
 
 pub struct AppState {
     now: Instant,
-    config: GuiConfig,
-    gui_state: GuiState,
-    app_dirs: Option<AppDirs>,
+    pub config: GuiConfig,
+    pub gui_state: GuiState,
+    pub app_dirs: Option<AppDirs>,
+    pub focused: bool,
 }
 
 impl AppState {
@@ -19,6 +20,7 @@ impl AppState {
             config,
             gui_state,
             app_dirs,
+            focused: true,
         }
     }
 
@@ -31,11 +33,12 @@ impl AppState {
 
         match message {
             Message::Animate => Task::none(),
+            Message::Global(global_message) => self.handle_global_messages(global_message),
         }
     }
 
     pub fn subscription(&self) -> Subscription<Message> {
-        Subscription::batch([self.animation_subscription()])
+        Subscription::batch([self.animation_subscription(), Self::events_subscription()])
     }
 
     pub fn view(&self) -> Element<'_, Message> {
