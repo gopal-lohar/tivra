@@ -5,9 +5,10 @@ use std::fs;
 use std::path::{Path, PathBuf};
 use tracing::{debug, error, info, instrument, warn};
 
-pub const GUI_CONFIG_FILE: &str = "gui_config.toml";
-pub const GUI_STATE_FILE: &str = "gui_state.toml";
-pub const GUI_TELEMETRY_FILE: &str = "gui";
+pub const GUI_CONFIG_FILENAME: &str = "gui_config.toml";
+pub const GUI_STATE_FILENAME: &str = "gui_state.toml";
+pub const GUI_TELEMETRY_FILENAME: &str = "gui";
+const FALLBACK_DIR: &str = ".tivra";
 
 /// Maximum allowed size for configuration files (1MB).
 const MAX_CONFIG_SIZE: u64 = 1024 * 1024;
@@ -254,11 +255,11 @@ pub struct AppDirs {
 
 impl AppDirs {
     pub fn gui_config_file(&self) -> PathBuf {
-        self.config.join(GUI_CONFIG_FILE)
+        self.config.join(GUI_CONFIG_FILENAME)
     }
 
     pub fn gui_state_file(&self) -> PathBuf {
-        self.state.join(GUI_STATE_FILE)
+        self.state.join(GUI_STATE_FILENAME)
     }
 }
 
@@ -294,8 +295,8 @@ pub fn get_and_setup_paths() -> Result<AppDirs, String> {
 fn get_raw_paths() -> AppDirs {
     #[cfg(debug_assertions)]
     {
-        // In debug mode, store everything in a local .dev_env folder
-        let root = std::env::current_dir().unwrap().join(".dev_env");
+        // In debug mode, store everything in a local fallback dir
+        let root = std::env::current_dir().unwrap().join(FALLBACK_DIR);
         AppDirs {
             config: root.join("config"),
             data: root.join("data"),
