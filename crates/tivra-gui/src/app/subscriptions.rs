@@ -1,6 +1,6 @@
 use crate::app::{
     app_state::AppState,
-    message::{GlobalMessage, Message, WindowEvent},
+    message::{GlobalMessage, Message, ScaleFactorShortcut, WindowEvent},
 };
 use iced::{
     Subscription,
@@ -48,10 +48,13 @@ impl AppState {
                             WindowEvent::CloseRequested,
                         ))),
                         Key::Character("=") => Some(Message::Global(GlobalMessage::Event(
-                            WindowEvent::ScaleFactorShortcut(true),
+                            WindowEvent::ScaleFactorShortcut(ScaleFactorShortcut::Increase),
                         ))),
                         Key::Character("-") => Some(Message::Global(GlobalMessage::Event(
-                            WindowEvent::ScaleFactorShortcut(false),
+                            WindowEvent::ScaleFactorShortcut(ScaleFactorShortcut::Decrease),
+                        ))),
+                        Key::Character("0") => Some(Message::Global(GlobalMessage::Event(
+                            WindowEvent::ScaleFactorShortcut(ScaleFactorShortcut::Reset),
                         ))),
                         _ => None,
                     },

@@ -1,7 +1,7 @@
 use crate::{
     app::{
         app_state::AppState,
-        constants::{FONT_SIZE, LAILA_BYTES, POPPINS_BYTES},
+        constants::{FONT_SIZE, LAILA_BYTES, POPPINS_BYTES, WINDOW_ICON},
     },
     config::{AppFont, GuiConfig, GuiState, WindowPosition},
 };
@@ -9,6 +9,7 @@ use common::{APP_ID, APPNAME_TITLECASE, config::AppDirs};
 use iced::window::Position;
 #[cfg(any(target_os = "linux", target_os = "macos"))]
 use iced::window::settings::PlatformSpecific;
+use image::ImageFormat;
 use std::borrow::Cow;
 
 pub fn run(config: GuiConfig, state: GuiState, app_dirs: Option<AppDirs>) -> iced::Result {
@@ -45,11 +46,12 @@ pub fn run(config: GuiConfig, state: GuiState, app_dirs: Option<AppDirs>) -> ice
         ..Default::default()
     })
     .window(iced::window::Settings {
+        size: iced::Size::new(state.size.width, state.size.height),
+        icon: iced::window::icon::from_file_data(WINDOW_ICON, Some(ImageFormat::Png)).ok(),
         #[cfg(not(target_os = "macos"))]
         decorations: config.decorations,
         #[cfg(target_os = "macos")]
         decorations: false,
-        size: iced::Size::new(state.size.width, state.size.height),
         position: match state.position {
             WindowPosition::Default => Position::Default,
             WindowPosition::Centered => Position::Centered,

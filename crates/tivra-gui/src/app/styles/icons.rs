@@ -68,17 +68,28 @@ define_icons! {
     Warning     => "warning.svg",
 }
 
-/// Creates a themed SVG widget for the given icon.
-///
-/// # Arguments
-/// * `size` - The width and height of the icon.
-/// * `color` - Optional tint. If `None`, uses `theme.palette().text`.
-pub fn themed_icon<'a, T>(icon: Icon, size: f32, color: Option<Color>) -> iced::Element<'a, T> {
+/// Defines how the icon should be colored.
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub enum IconStyle {
+    /// Use the SVG's original colors (no tint applied).
+    Original,
+    /// Automatically tint using the current theme's text color.
+    Auto,
+    /// Tint with a specific custom color.
+    Custom(Color),
+}
+
+/// Creates an icon widget with the specified coloring strategy.
+pub fn svg_icon<'a, T>(icon: Icon, size: f32, style: IconStyle) -> iced::Element<'a, T> {
     svg(icon.handle())
         .width(size)
         .height(size)
         .style(move |theme: &Theme, _| svg::Style {
-            color: Some(color.unwrap_or(theme.palette().text)),
+            color: match style {
+                IconStyle::Original => None,
+                IconStyle::Auto => Some(theme.palette().text),
+                IconStyle::Custom(c) => Some(c),
+            },
         })
         .into()
 }

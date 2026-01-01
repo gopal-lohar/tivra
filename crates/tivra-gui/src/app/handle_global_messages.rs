@@ -1,7 +1,7 @@
 use crate::{
     app::{
         app_state::AppState,
-        message::{GlobalMessage, Message, WindowCommand, WindowEvent},
+        message::{GlobalMessage, Message, ScaleFactorShortcut, WindowCommand, WindowEvent},
     },
     config::{WindowPosition, WindowSize},
 };
@@ -73,11 +73,25 @@ impl AppState {
                         self.focused = false;
                         Task::none()
                     }
-                    WindowEvent::ScaleFactorShortcut(increase) => {
+                    WindowEvent::ScaleFactorShortcut(action) => {
+                        const DELTA: f32 = 0.1;
+                        const MAX: f32 = 3.0;
+                        const MIN: f32 = 0.3;
                         let scale_factor = self.config.scale_factor;
-                        if !(scale_factor > 2.99 && increase || scale_factor < 0.31 && !increase) {
-                            let delta = if increase { 0.1 } else { -0.1 };
-                            self.config.scale_factor += delta;
+                        match action {
+                            ScaleFactorShortcut::Increase => {
+                                if scale_factor <= MAX - DELTA {
+                                    self.config.scale_factor += DELTA;
+                                }
+                            }
+                            ScaleFactorShortcut::Decrease => {
+                                if scale_factor >= MIN + DELTA {
+                                    self.config.scale_factor -= DELTA;
+                                }
+                            }
+                            ScaleFactorShortcut::Reset => {
+                                self.config.scale_factor = 1.;
+                            }
                         }
                         Task::none()
                     }

@@ -20,7 +20,14 @@ pub enum WindowEvent {
     CloseRequested,
     Focused,
     Unfocused,
-    ScaleFactorShortcut(bool),
+    ScaleFactorShortcut(ScaleFactorShortcut),
+}
+
+#[derive(Debug, Clone)]
+pub enum ScaleFactorShortcut {
+    Increase,
+    Decrease,
+    Reset,
 }
 
 #[derive(Debug, Clone)]

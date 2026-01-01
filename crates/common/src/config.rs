@@ -68,7 +68,6 @@ where
     P: AsRef<Path>,
 {
     let path = path.as_ref();
-    debug!("Attempting to load configuration");
 
     let metadata = fs::metadata(path).map_err(|e| {
         error!(error = ?e, "Failed to read file metadata");
@@ -108,7 +107,6 @@ where
     P: AsRef<Path>,
 {
     let path = path.as_ref();
-    debug!("Attempting to save configuration");
 
     let content = toml::to_string_pretty(config).map_err(|e| {
         error!(error = ?e, "Failed to serialize config");
@@ -173,7 +171,6 @@ where
     P: AsRef<Path>,
 {
     let path = path.as_ref();
-    debug!("Attempting to load configuration (async)");
 
     let metadata = tokio::fs::metadata(path).await.map_err(|e| {
         error!(error = ?e, "Failed to read file metadata");
@@ -213,7 +210,6 @@ where
     P: AsRef<Path>,
 {
     let path = path.as_ref();
-    debug!("Attempting to save configuration (async)");
 
     let content = toml::to_string_pretty(config).map_err(|e| {
         error!(error = ?e, "Failed to serialize config");
