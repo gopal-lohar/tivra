@@ -11,7 +11,13 @@ use iced::{
 };
 use iced::{Border, Padding, Pixels};
 
-pub fn titlebar_view<'a>(maximized: bool, focused: bool) -> Element<'a, Message> {
+pub struct TitleBarState {
+    pub maximized: bool,
+    pub focused: bool,
+    pub scale_factor: f32,
+}
+
+pub fn titlebar_view<'a>(state: TitleBarState) -> Element<'a, Message> {
     #[cfg(not(target_os = "macos"))]
     let titlebar_buttons = {
         let title_bar_button = move |icon: Icon, on_press: Message| {
@@ -41,13 +47,13 @@ pub fn titlebar_view<'a>(maximized: bool, focused: bool) -> Element<'a, Message>
                 Message::Global(GlobalMessage::Command(WindowCommand::Minimize))
             ),
             title_bar_button(
-                if maximized {
+                if state.maximized {
                     Icon::Restore
                 } else {
                     Icon::Maximize
                 },
                 Message::Global(GlobalMessage::Command(WindowCommand::ToggleMaximize(
-                    maximized
+                    state.maximized
                 )))
             ),
             title_bar_button(
@@ -104,7 +110,7 @@ pub fn titlebar_view<'a>(maximized: bool, focused: bool) -> Element<'a, Message>
             )
             .width(Length::Fill)
             .height(if cfg!(target_os = "macos") {
-                FONT_SIZE * 2.
+                FONT_SIZE * 2. / state.scale_factor
             } else {
                 FONT_SIZE * 3.
             })
@@ -114,16 +120,16 @@ pub fn titlebar_view<'a>(maximized: bool, focused: bool) -> Element<'a, Message>
     .style(move |theme: &Theme| {
         let palette = theme.extended_palette();
         container::Style {
-            background: Some(if !focused {
-                palette.background.weakest.color.into()
+            background: Some(if !state.focused {
+                palette.background.weaker.color.into()
             } else {
-                palette.background.base.color.into()
+                palette.background.weakest.color.into()
             }),
             ..Default::default()
         }
     });
 
-    let separator = container("")
+    let separator = container(space())
         .width(Length::Fill)
         .height(Pixels::from(BORDER_WIDTH))
         .style(|theme: &Theme| container::Style {

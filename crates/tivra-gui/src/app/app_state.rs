@@ -1,6 +1,6 @@
 use crate::{
     app::{
-        components::decorations::{resize_layer, titlebar_view},
+        components::decorations::{TitleBarState, resize_layer, titlebar_view},
         message::Message,
         styles::theme::ThemeOption,
     },
@@ -54,7 +54,11 @@ impl AppState {
         let mut main_view: Vec<Element<Message>> = vec![];
 
         if !self.config.decorations {
-            main_view.push(titlebar_view(self.gui_state.maximized, self.focused))
+            main_view.push(titlebar_view(TitleBarState {
+                maximized: self.gui_state.maximized,
+                focused: self.focused,
+                scale_factor: self.config.scale_factor,
+            }))
         }
 
         let shell: Vec<Element<Message>> = vec![];
