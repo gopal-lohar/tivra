@@ -120,11 +120,11 @@ pub fn titlebar_view<'a>(state: TitleBarState) -> Element<'a, Message> {
     .style(move |theme: &Theme| {
         let palette = theme.extended_palette();
         container::Style {
-            background: Some(if !state.focused {
-                palette.background.weaker.color.into()
+            background: if !state.focused {
+                Some(palette.background.weaker.color.into())
             } else {
-                palette.background.weakest.color.into()
-            }),
+                None
+            },
             ..Default::default()
         }
     });

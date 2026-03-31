@@ -56,7 +56,7 @@ impl Default for GuiConfig {
             font: AppFont::default(),
             decorations: false,
             scale_factor: 1.,
-            language: Some(GuiLanguage::Hi),
+            language: Some(GuiLanguage::En),
             size_unit: ByteStandard::Decimal,
             theme: ThemeOption::default(),
             saved_theme: StoredTheme::default(),

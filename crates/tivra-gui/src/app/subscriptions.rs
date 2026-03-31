@@ -18,7 +18,7 @@ impl AppState {
     }
 
     fn is_animating(&self) -> bool {
-        false
+        self.sidebar_state.is_animating(self.now)
     }
 
     pub fn events_subscription() -> Subscription<Message> {

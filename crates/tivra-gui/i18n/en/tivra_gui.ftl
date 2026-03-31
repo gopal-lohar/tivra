@@ -5,3 +5,4 @@ sidebar-downloading = Downloading
 sidebar-paused = Paused
 sidebar-settings = Settings
 sidebar-github = Github
+sidebar-about = About

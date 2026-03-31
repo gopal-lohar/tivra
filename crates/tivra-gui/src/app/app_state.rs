@@ -1,6 +1,10 @@
 use crate::{
     app::{
-        components::decorations::{TitleBarState, resize_layer, titlebar_view},
+        components::{
+            decorations::{TitleBarState, resize_layer, titlebar_view},
+            sidebar::{SidebarContext, sidebar_view},
+        },
+        constants::ANIMATION_DURATION,
         message::Message,
         styles::theme::ThemeOption,
     },
@@ -8,18 +12,34 @@ use crate::{
 };
 use common::config::AppDirs;
 use iced::{
-    Element, Length, Subscription, Theme,
+    Animation, Element, Length, Subscription, Theme,
     task::Task,
     time::Instant,
     widget::{Column, Row, Stack, container},
 };
 
 pub struct AppState {
-    now: Instant,
+    pub now: Instant,
     pub config: GuiConfig,
     pub gui_state: GuiState,
     pub app_dirs: Option<AppDirs>,
     pub focused: bool,
+    pub sidebar_state: Animation<bool>,
+    pub current_page: Page,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum Page {
+    Home(ShowDownloads),
+    Settings,
+    About,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum ShowDownloads {
+    All,
+    Downloading,
+    Paused,
 }
 
 impl AppState {
@@ -30,6 +50,10 @@ impl AppState {
             gui_state,
             app_dirs,
             focused: true,
+            sidebar_state: Animation::new(false)
+                .easing(iced::animation::Easing::EaseInOut)
+                .duration(iced::time::milliseconds(ANIMATION_DURATION)),
+            current_page: Page::Home(ShowDownloads::All),
         }
     }
 
@@ -50,7 +74,7 @@ impl AppState {
         Subscription::batch([self.animation_subscription(), Self::events_subscription()])
     }
 
-    pub fn view(&self) -> Element<'_, Message> {
+    pub fn view<'a>(&self) -> Element<'_, Message> {
         let mut main_view: Vec<Element<Message>> = vec![];
 
         if !self.config.decorations {
@@ -61,7 +85,14 @@ impl AppState {
             }))
         }
 
-        let shell: Vec<Element<Message>> = vec![];
+        let sidebar_context = SidebarContext {
+            current_page: self.current_page.clone(),
+            sidebar_width: self.gui_state.sidebar_width,
+            sidebar_state: self.sidebar_state.clone(),
+        };
+
+        let shell: Vec<Element<Message>> =
+            vec![sidebar_view(sidebar_context, self.now).map(Message::Global)];
 
         main_view.push(
             Row::from_vec(shell)

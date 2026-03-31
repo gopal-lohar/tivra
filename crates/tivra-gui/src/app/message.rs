@@ -1,5 +1,7 @@
 use iced::{Point, Size, window::Direction};
 
+use crate::app::app_state::Page;
+
 #[derive(Debug, Clone)]
 pub enum Message {
     Animate,
@@ -38,4 +40,6 @@ pub enum WindowCommand {
     Minimize,
     ToggleMaximize(bool),
     DragResize(Direction),
+    Navigate(Page),
+    ToggleSidebar,
 }

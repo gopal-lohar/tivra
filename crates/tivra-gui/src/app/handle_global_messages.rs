@@ -112,6 +112,15 @@ impl AppState {
                 WindowCommand::ToggleMaximize(maximized) => {
                     window::latest().and_then(move |id| window::maximize(id, !maximized))
                 }
+                WindowCommand::Navigate(page) => {
+                    self.current_page = page;
+                    Task::none()
+                }
+                WindowCommand::ToggleSidebar => {
+                    let sidebar_state = !self.sidebar_state.value();
+                    self.sidebar_state.go_mut(sidebar_state, self.now);
+                    Task::none()
+                }
             },
         }
     }
